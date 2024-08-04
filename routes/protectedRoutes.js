@@ -1,6 +1,6 @@
 // routes/protectedRoute.js
 import express from 'express';
-import { authorize } from '../middlewares/authMiddleware.js';
+import { authorize } from '../middlewares/authMiddlewares.js';
 
 const router = express.Router();
 

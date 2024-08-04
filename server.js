@@ -4,10 +4,9 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
-import protectedRoutes from './routes/protectedRoute.js';
+import protectedRoutes from './routes/protectedRoutes.js';
 
 dotenv.config();
-
 const app = express();
 
 app.use(bodyParser.json());
