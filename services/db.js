@@ -43,6 +43,25 @@ const createTables = async () => {
         role_id INTEGER REFERENCES roles(id) NOT NULL
       );
     `);
+    // Create categories table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS categories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE
+      );
+    `);
+
+    // Create books table with reference to categories and users table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS books (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        author VARCHAR(255) NOT NULL,
+        quantity INTEGER NOT NULL,
+        owner_id INTEGER REFERENCES users(id),
+        category_id INTEGER REFERENCES categories(id)
+      );
+    `);
 
     console.log("Tables created successfully");
   } catch (err) {
