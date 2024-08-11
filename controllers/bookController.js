@@ -3,23 +3,33 @@ import Book from '../models/book.js';
 import BookCategory from '../models/book_category.js';
 
 export const addBook = async (req, res) => {
-  const { title, author, quantity, categoryName } = req.body;
+  const { title, author, quantity, price, categoryName } = req.body;
   const ownerId = req.user.id;
-
+  const coverPhoto = req.file ? req.file.path : null;
+  
   try {
+    
     let category = await BookCategory.findByName(categoryName);
     if (!category) {
       category = await BookCategory.create({ name: categoryName });
     }
 
-    const book = await Book.create({ title, author, quantity, ownerId, categoryId: category.id });
+    const book = await Book.create({
+      title,
+      author,
+      quantity,
+      price,
+      categoryId:category.id,
+      ownerId,
+      coverPhoto,
+    });
     res.status(201).json(book);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-export const getBooksByOwner = async (req, res) => {
+export const getBooksByUser = async (req, res) => {
   const ownerId = req.user.id;
 
   try {
@@ -42,6 +52,11 @@ export const getAllBooks = async (req, res) => {
 export const updateBook = async (req, res) => {
   const bookId = req.params.id;
   const updates = req.body;
+  const coverPhoto = req.file ? req.file.path : null;
+
+  if (coverPhoto) {
+    updates.coverPhoto = coverPhoto;
+  }
 
   try {
     const book = await Book.updateById(bookId, updates);

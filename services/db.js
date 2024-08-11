@@ -61,6 +61,54 @@ const createTables = async () => {
         owner_id INTEGER REFERENCES users(id),
         category_id INTEGER REFERENCES categories(id)
       );
+    `);await pool.query(`
+      CREATE TABLE IF NOT EXISTS user_statuses (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL UNIQUE
+      );
+    `);
+
+    await pool.query(`
+      INSERT INTO user_statuses (name) VALUES
+      ('pending'),
+      ('approved'),
+      ('disabled')
+      ON CONFLICT (name) DO NOTHING;
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS rental_statuses (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL UNIQUE
+      );
+    `);
+
+    await pool.query(`
+      INSERT INTO rental_statuses (name) VALUES
+      ('rented'),
+      ('free')
+      ON CONFLICT (name) DO NOTHING;
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS profiles (
+        id SERIAL PRIMARY KEY,
+        firstname VARCHAR(255) NOT NULL,
+        lastname VARCHAR(255) NOT NULL,
+        user_id INTEGER REFERENCES users(id) NOT NULL,
+        profile_photo VARCHAR(255)
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS rentals (
+        id SERIAL PRIMARY KEY,
+        book_id INTEGER REFERENCES books(id) NOT NULL,
+        renter_id INTEGER REFERENCES users(id) NOT NULL,
+        rental_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        return_date TIMESTAMP,
+        rental_status_id INTEGER REFERENCES rental_statuses(id) NOT NULL
+      );
     `);
 
     console.log("Tables created successfully");

@@ -2,10 +2,10 @@
 import pool from '../services/db.js';
 
 class Book {
-  static async create({ title, author, quantity, ownerId, categoryId }) {
+  static async create({ title, author, quantity, price, categoryId, ownerId, coverPhoto }) {
     const result = await pool.query(
-      'INSERT INTO books (title, author, quantity, owner_id, category_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [title, author, quantity, ownerId, categoryId]
+      'INSERT INTO books (title, author, quantity, price, category_id, owner_id, cover_photo) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [title, author, quantity, price, categoryId, ownerId, coverPhoto]
     );
     return result.rows[0];
   }
@@ -26,10 +26,10 @@ class Book {
   }
 
   static async updateById(id, updates) {
-    const { title, author, quantity, categoryId } = updates;
+    const { title, author, quantity, price, categoryId, coverPhoto } = updates;
     const result = await pool.query(
-      'UPDATE books SET title = $1, author = $2, quantity = $3, category_id = $4 WHERE id = $5 RETURNING *',
-      [title, author, quantity, categoryId, id]
+      'UPDATE books SET title = $1, author = $2, quantity = $3, price = $4, category_id = $5, cover_photo = $6 WHERE id = $7 RETURNING *',
+      [title, author, quantity, price, categoryId, coverPhoto, id]
     );
     return result.rows[0];
   }
